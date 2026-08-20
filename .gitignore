@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+build/
+
+# 服务器运行目录（含 world 数据与 config）
+run/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 构建输出
+out/
+
+# 日志
+*.log
+logs/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 本地配置
+local.properties
+
+# 协议与杂项
+eula.txt
