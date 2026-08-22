@@ -1,13 +1,18 @@
-# SneakFall 轻功
+# SneakFall 轻功 / SneakFall
 
 > **坠落时按住潜行，减免摔落伤害。**
 > NeoForge 1.21.1 · Minecraft 1.21.1 · 开源模组（GPL-3.0）
+>
+> *Hold the sneak key while falling to reduce fall damage.*
+> *NeoForge 1.21.1 · Minecraft 1.21.1 · Open-source mod (GPL-3.0)*
 
 SneakFall（轻功）是一个 NeoForge 模组：玩家从高处坠落时按住潜行（Sneak），即可按配置规则减免摔落伤害。减免规则按坠落高度区间划分为多个"阶段"，每个阶段可独立配置触发模式与减免计算方式。
 
+*SneakFall is a NeoForge mod: hold the sneak key while falling to reduce fall damage according to configurable rules. Reduction rules are divided into "stages" by fall-height ranges; each stage independently configures its trigger mode and reduction method.*
+
 ---
 
-## 核心机制
+## 核心机制 / Core Mechanics
 
 ### 触发模式（mode）
 
@@ -38,11 +43,36 @@ QTE 窗口以秒为单位配置（运行时按 1 秒 = 20 游戏刻换算），�
 | --- | --- | --- | --- | --- |
 | `3.0~20.0` | QTE | 0.4 s | DISTANCE | 1.5 格 |
 
+### Trigger modes
+
+| Mode | Meaning |
+| --- | --- |
+| `SUSTAIN` | Reduction applies if sneak is held at the moment of landing |
+| `QTE` | After pressing sneak, you must land within the time window for reduction to apply |
+
+QTE windows are configured in seconds (1 s = 20 game ticks at runtime); releasing sneak resets the timer.
+
+### Reduction methods
+
+| Mode | Meaning |
+| --- | --- |
+| `DISTANCE` | Reduces the equivalent fall distance by N blocks before damage is computed |
+| `PERCENT` | Scales damage: final = original × (1 − ratio), ratio capped at 1 |
+
+### Height ranges and fallback
+
+- Height ranges match stages by half-open intervals `[min, max)`, e.g. `"3.0~20.0"`, `"10~"` (no upper bound), `"~10"` (no lower bound), `"all"` (any height).
+- Stages match in order; the first match wins.
+- If no stage matches (including gaps), the **fallback** config in the `general` group applies; the default fallback provides no reduction (`fallbackReductionValue = 0.0`) so fall damage is never unexpectedly negated.
+- A single malformed config line only skips that stage; it never prevents server startup.
+
 ---
 
-## 配置文件
+## 配置文件 / Configuration
 
 首次启动时自动生成 `config/sneakfall-common.toml`（含全部中文注释，可直接阅读修改）。配置在事件触发时动态读取，游戏内无需重启即可通过 `/reload`（NeoForge）或重启生效。
+
+*On first launch, `config/sneakfall-common.toml` is generated automatically (with full Chinese comments). Config is read dynamically per event, so changes take effect via `/reload` (NeoForge) or a restart — no need to restart the game manually.*
 
 默认配置内容：
 
@@ -86,9 +116,11 @@ QTE 窗口以秒为单位配置（运行时按 1 秒 = 20 游戏刻换算），�
 
 ---
 
-## 构建方法
+## 构建方法 / Building
 
 要求：**JDK 21**（Gradle 8.x，NeoForge 21.1+）。
+
+*Requires **JDK 21** (Gradle 8.x, NeoForge 21.1+).*
 
 ```bash
 ./gradlew build        # Linux / macOS
@@ -97,14 +129,20 @@ gradlew.bat build      # Windows
 
 构建产物位于 `build/libs/`（`sneakfall-<版本>.jar`），放入 Minecraft 实例的 `mods/` 目录即可。
 
+*The build artifact is in `build/libs/` (`sneakfall-<version>.jar`); drop it into your Minecraft instance's `mods/` directory.*
+
 > 国内网络构建慢或超时时，可将 `gradle/wrapper/gradle-wrapper.properties` 中的
 > `distributionUrl` 替换为镜像源（如腾讯云 `https://mirrors.cloud.tencent.com/gradle/...`）。
+>
+> *If Gradle downloads are slow or time out (common in mainland China), replace the `distributionUrl` in `gradle/wrapper/gradle-wrapper.properties` with a mirror (e.g. Tencent Cloud `https://mirrors.cloud.tencent.com/gradle/...`).*
 
 ---
 
-## 文档目录（docs/）
+## 文档目录（docs/）/ Documentation
 
 开发文档，记录本模组从设计到交付的过程：
+
+*Development documents recording the mod's journey from design to delivery:*
 
 | 文档 | 内容 |
 | --- | --- |
@@ -117,7 +155,7 @@ gradlew.bat build      # Windows
 
 ---
 
-## 目录结构
+## 目录结构 / Project Layout
 
 ```
 sneakfall/
@@ -141,6 +179,8 @@ sneakfall/
 
 ---
 
-## 许可
+## 许可 / License
 
 本模组按 **GPL-3.0** 开源协议发布，许可证全文见仓库根目录 `LICENSE` 文件。
+
+*This mod is released under **GPL-3.0**. See the `LICENSE` file in the repository root.*
